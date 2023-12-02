@@ -17,12 +17,19 @@ Output will be an answer based on the input question. Following will happen in t
 ## Discussion with examples:
 ### 1. Example 1
 **Question :** What is the procedure to change the password ? 
+
 For this question, similar questions found out by retriever are:
-  a. In which format I should create my UAN password
-  b. What to do if I forgot my password
-  c. What to do if I forgot my password and my registered mobile with UAN has also changed
-  d. Can I change my already seeded Bank account number
+a. In which format I should create my UAN password
+b. What to do if I forgot my password
+c. What to do if I forgot my password and my registered mobile with UAN has also changed
+d. Can I change my already seeded Bank account number
+
 Each of the answers are assessed by llm and appropriate answer with nice formatting as follows is provided:
+
 **Answer :**   Please click on “Change Password” at Member Interface of Unified Portal. Provide your UAN with CAPTCHA. System will send the OTP on your mobile which is seeded with UAN and you can reset the password.
 
 Following is an app image for this question:
+![PasswordChangeQuestionImage](https://github.com/Swapnil-Ransing/AnsweringQuestionsUsingLLM/blob/main/Images/PasswordChangeQuestion.JPG)
+
+### 2. Example 2
+**Question :** What is the procedure to change the password ? 
