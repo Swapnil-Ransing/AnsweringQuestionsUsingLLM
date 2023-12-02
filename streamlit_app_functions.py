@@ -3,13 +3,41 @@ import pickle
 print('In streamlit_app_functions file')
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 instructor_embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large")
+print('Initialized the instructor embedding')
+# print('loading the retriever pickle file')
+# # Using the pickled retriver file
+# pickle_in = open("retriever_pycharm.pickle", "rb")
+# retriever = pickle.load(pickle_in)
+# pickle_in.close()
+# print('Pickle load is complete')
 
-print('loading the retriever pickle file')
-# Using the pickled retriver file
-pickle_in = open("retriever_pycharm.pickle", "rb")
-retriever = pickle.load(pickle_in)
-pickle_in.close()
-print('Pickle load is complete')
+# As pickle file is large, instead of using it, whole code is being used
+# Importing the required packages
+from langchain.vectorstores import FAISS
+from langchain.chains import RetrievalQA
+
+# Load the data from EPFO faq's
+from langchain.document_loaders.csv_loader import CSVLoader
+print('-'*50)
+
+print('Loading the data')
+loader = CSVLoader(file_path='EPFO_FAQs.csv', encoding='unicode_escape', source_column="Question ")
+
+# Store the loaded data in the 'data' variable
+data = loader.load()
+
+# correcting the rows as there are only specific number of questions
+data=data[:41]
+print('Data load is complete')
+print('-'*50)
+
+# Create a FAISS instance for vector database from 'data'
+vectordb = FAISS.from_documents(documents=data,embedding=instructor_embeddings)
+print('Vector database is prepared')
+# Create a retriever for querying the vector database
+retriever = vectordb.as_retriever(score_threshold = 0.7)
+print('Retriever is created')
+
 print('-'*50)
 # adding the details about googl epalm and api key
 from dotenv import load_dotenv
