@@ -47,7 +47,8 @@ load_dotenv()
 from langchain.llms import GooglePalm
 import os
 # api_key = os.environ["GOOGLE_API_KEY"]
-st.write("api_key:", st.secrets["GOOGLE_API_KEY"])
+st.write("api_key", st.secrets["GOOGLE_API_KEY"])
+print('First four digits of api_key is ',api_key[0:4])
 
 llm = GooglePalm(google_api_key=api_key, temperature=0.3)
 
