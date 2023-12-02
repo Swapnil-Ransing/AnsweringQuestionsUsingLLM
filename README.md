@@ -1,7 +1,7 @@
-# CHATBOT POC roject - EPFO Question and Answer System {CHATBOT LINK](https://chatbotllmepfo.streamlit.app/)
+# CHATBOT POC roject - EPFO Question and Answer System [CHATBOT LINK](https://chatbotllmepfo.streamlit.app/)
 End to End LLM POC project to answer the EPFO questions conssting of **Account (UAN) (creation, documents required, claims), KYC (procedure, update)**
 
-This is an end to end LLM project based on Google Palm and Langchain. In this project a question and answer system related to EPFO (Employee's Provident Fund Organization) is developed. EPFO is one of the World's largest Social Security Organisations in terms of clientele and the volume of financial transactions undertaken. In the developed project questions related to account (UAN) (creation, documents required, claims), KYC (procedure, update) etc. are tried to answered using google palm large language model.
+This is an end to end LLM project based on **<u>Google Palm and Langchain</u>**. In this project a question and answer system related to EPFO (Employee's Provident Fund Organization) is developed. EPFO is one of the World's largest Social Security Organisations in terms of clientele and the volume of financial transactions undertaken. In the developed project questions related to account (UAN) (creation, documents required, claims), KYC (procedure, update) etc. are tried to answered using google palm large language model.
 
 ## Project Architecture:
 1. CSV loading : CSV loader from langchain document loader will load the csv question and answer file.
