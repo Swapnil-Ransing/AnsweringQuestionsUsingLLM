@@ -1,5 +1,6 @@
 # This file consists of functions to be used for hosting the app
 import pickle
+import streamlit as st
 print('In streamlit_app_functions file')
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 instructor_embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large")
@@ -45,7 +46,8 @@ load_dotenv()
 
 from langchain.llms import GooglePalm
 import os
-api_key = os.environ["GOOGLE_API_KEY"]
+# api_key = os.environ["GOOGLE_API_KEY"]
+st.write("api_key:", st.secrets["GOOGLE_API_KEY"])
 
 llm = GooglePalm(google_api_key=api_key, temperature=0.3)
 
