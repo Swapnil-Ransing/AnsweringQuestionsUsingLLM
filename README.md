@@ -32,4 +32,21 @@ Following is an app image for this question:
 ![PasswordChangeQuestionImage](https://github.com/Swapnil-Ransing/AnsweringQuestionsUsingLLM/blob/main/Images/PasswordChangeQuestion.JPG)
 
 ### 2. Example 2
-**Question :** What is the procedure to change the password ? 
+**Question :** What if I purchase a mobile phone, do I need to create an account ? 
+
+For this question, similar questions found out by retriever are:
+a. Can I apply online claim if my mobile is not linked with Aadhaar
+b. What are the minimum details which are required to be linked with UAN for availing online services
+c. Can I activate UAN through SMS or mobile app
+
+As none of the questions matches with the question asked llm answers I don't know as mentioned in the prompt template:
+
+**Answer :**   I don't know.
+
+Following is an app image for this question:
+![PasswordChangeQuestionImage](https://github.com/Swapnil-Ransing/AnsweringQuestionsUsingLLM/blob/main/Images/NewMobilePhoneQuestion.JPG)
+
+## Observations and Conclusions:
+1. For an asked questions, similar questions were able to find from vector database.
+2. Multiple similar questions found for an asked questions. Multiple answers from these quesions were summarised nicely by llm.
+3. For a question which is not related to the base question and answer document, language chain provides answer I don't know.
