@@ -12,18 +12,8 @@ os.environ["LANGCHAIN_TRACING_V2"]="true"
 LANGCHAIN_PROJECT=st.secrets["langchain_project"]
 HF_TOKEN=st.secrets["huggingface_access_token"]
 
-
-
-# os.environ["GOOGLE_API_KEY"]=os.getenv("google_api_key")
-# os.environ["LANGCHAIN_API_KEY"]=os.getenv("langchain_api_key")
-# os.environ["LANGCHAIN_TRACING_V2"]="true"
-# os.environ["LANGCHAIN_PROJECT"]=os.getenv("langchain_project")
-# os.environ["HF_TOKEN"] = os.getenv('huggingface_access_token')
 print('Loaded the api keys')
 
-from langchain_huggingface import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name="all-mpnet-base-v2")
-print('Initialized the embedding')
 
 # Importing the required packages
 from langchain_community.vectorstores import FAISS
@@ -43,6 +33,12 @@ data = loader.load()
 data=data[:41]
 print('Data load is complete')
 print('-'*50)
+
+from langchain_huggingface import HuggingFaceEmbeddings
+print("Imported HuggingFaceEmbeddings package")
+
+embeddings = HuggingFaceEmbeddings(model_name="all-mpnet-base-v2")
+print('Initialized the embedding')
 
 # Create a FAISS instance for vector database from 'data'
 vectordb = FAISS.from_documents(documents=data,embedding=embeddings)
