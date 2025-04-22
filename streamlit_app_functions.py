@@ -5,11 +5,20 @@ print('In streamlit_app_functions file')
 import os
 from dotenv import load_dotenv
 load_dotenv()
-os.environ["GOOGLE_API_KEY"]=os.getenv("google_api_key")
-os.environ["LANGCHAIN_API_KEY"]=os.getenv("langchain_api_key")
+
+GOOGLE_API_KEY=st.secrets["google_api_key"]
+LANGCHAIN_API_KEY=st.secrets["langchain_api_key"]
 os.environ["LANGCHAIN_TRACING_V2"]="true"
-os.environ["LANGCHAIN_PROJECT"]=os.getenv("langchain_project")
-os.environ["HF_TOKEN"] = os.getenv('huggingface_access_token')
+LANGCHAIN_PROJECT=st.secrets["langchain_project"]
+HF_TOKEN=st.secrets["huggingface_access_token"]
+
+
+
+# os.environ["GOOGLE_API_KEY"]=os.getenv("google_api_key")
+# os.environ["LANGCHAIN_API_KEY"]=os.getenv("langchain_api_key")
+# os.environ["LANGCHAIN_TRACING_V2"]="true"
+# os.environ["LANGCHAIN_PROJECT"]=os.getenv("langchain_project")
+# os.environ["HF_TOKEN"] = os.getenv('huggingface_access_token')
 print('Loaded the api keys')
 
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -25,7 +34,7 @@ from langchain_community.document_loaders import CSVLoader
 print('-'*50)
 
 print('Loading the data')
-loader = CSVLoader('C:\Swapnil\GenerativeAI\Practice_1\EPFO_Chatbot_Project\EPFO_FAQs.csv', encoding='unicode_escape', source_column="Question ")
+loader = CSVLoader('EPFO_FAQs.csv', encoding='unicode_escape', source_column="Question ")
 
 # Store the loaded data in the 'data' variable
 data = loader.load()
