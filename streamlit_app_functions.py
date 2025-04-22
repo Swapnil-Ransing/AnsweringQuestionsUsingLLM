@@ -37,7 +37,7 @@ print('-'*50)
 from langchain_huggingface import HuggingFaceEmbeddings
 print("Imported HuggingFaceEmbeddings package")
 
-embeddings = HuggingFaceEmbeddings(model_name="all-mpnet-base-v2")
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 print('Initialized the embedding')
 
 # Create a FAISS instance for vector database from 'data'
