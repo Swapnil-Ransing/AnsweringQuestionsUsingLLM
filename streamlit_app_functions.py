@@ -62,7 +62,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash-001",
     temperature=0.3,
-    max_retries=2
+    timeout=10,
+    max_retries=5
 )
 
 print('Creating a prompt template')
