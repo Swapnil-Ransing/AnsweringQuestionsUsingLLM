@@ -1,28 +1,31 @@
 # This file consists of functions to be used for hosting the app
-import pickle
 import streamlit as st
 print('In streamlit_app_functions file')
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-instructor_embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large")
-print('Initialized the instructor embedding')
-# print('loading the retriever pickle file')
-# # Using the pickled retriver file
-# pickle_in = open("retriever_pycharm.pickle", "rb")
-# retriever = pickle.load(pickle_in)
-# pickle_in.close()
-# print('Pickle load is complete')
 
-# As pickle file is large, instead of using it, whole code is being used
+import os
+from dotenv import load_dotenv
+load_dotenv()
+os.environ["GOOGLE_API_KEY"]=os.getenv("google_api_key")
+os.environ["LANGCHAIN_API_KEY"]=os.getenv("langchain_api_key")
+os.environ["LANGCHAIN_TRACING_V2"]="true"
+os.environ["LANGCHAIN_PROJECT"]=os.getenv("langchain_project")
+os.environ["HF_TOKEN"] = os.getenv('huggingface_access_token')
+print('Loaded the api keys')
+
+from langchain_huggingface import HuggingFaceEmbeddings
+embeddings = HuggingFaceEmbeddings(model_name="all-mpnet-base-v2")
+print('Initialized the embedding')
+
 # Importing the required packages
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 
 # Load the data from EPFO faq's
-from langchain.document_loaders.csv_loader import CSVLoader
+from langchain_community.document_loaders import CSVLoader
 print('-'*50)
 
 print('Loading the data')
-loader = CSVLoader(file_path='EPFO_FAQs.csv', encoding='unicode_escape', source_column="Question ")
+loader = CSVLoader('C:\Swapnil\GenerativeAI\Practice_1\EPFO_Chatbot_Project\EPFO_FAQs.csv', encoding='unicode_escape', source_column="Question ")
 
 # Store the loaded data in the 'data' variable
 data = loader.load()
@@ -33,25 +36,24 @@ print('Data load is complete')
 print('-'*50)
 
 # Create a FAISS instance for vector database from 'data'
-vectordb = FAISS.from_documents(documents=data,embedding=instructor_embeddings)
+vectordb = FAISS.from_documents(documents=data,embedding=embeddings)
 print('Vector database is prepared')
 # Create a retriever for querying the vector database
-retriever = vectordb.as_retriever(score_threshold = 0.7)
+retriever = vectordb.as_retriever()
 print('Retriever is created')
 
 print('-'*50)
-# adding the details about googl epalm and api key
-from dotenv import load_dotenv
-load_dotenv()
 
-from langchain.llms import GooglePalm
-import os
-# api_key = os.environ["GOOGLE_API_KEY"]
-# st.write("api_key", st.secrets["GOOGLE_API_KEY"])
-api_key=st.secrets["GOOGLE_API_KEY"]
-print('First four digits of api_key is ',api_key[0:4])
+from langchain.prompts import PromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
+# api_key=st.secrets["GOOGLE_API_KEY"]
+# print('First four digits of api_key is ',api_key[0:4])
 
-llm = GooglePalm(google_api_key=api_key, temperature=0.3)
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash-001",
+    temperature=0.3,
+    max_retries=2
+)
 
 print('Creating a prompt template')
 # creating the prompt template
