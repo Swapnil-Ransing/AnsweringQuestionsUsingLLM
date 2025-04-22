@@ -2,6 +2,11 @@
 import streamlit as st
 print('In streamlit_app_functions file')
 
+# To resolve the error - https://discuss.streamlit.io/t/message-error-about-torch/90886/4
+import torch
+torch.classes.__path__ = [] # add this line to manually set it to empty. 
+
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
