@@ -7,9 +7,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GOOGLE_API_KEY=st.secrets["google_api_key"]
-LANGCHAIN_API_KEY=st.secrets["langchain_api_key"]
-os.environ["LANGCHAIN_TRACING_V2"]="true"
-LANGCHAIN_PROJECT=st.secrets["langchain_project"]
+# LANGCHAIN_API_KEY=st.secrets["langchain_api_key"]
+# os.environ["LANGCHAIN_TRACING_V2"]="true"
+# LANGCHAIN_PROJECT=st.secrets["langchain_project"]
 HF_TOKEN=st.secrets["huggingface_access_token"]
 
 print('Loaded the api keys')
