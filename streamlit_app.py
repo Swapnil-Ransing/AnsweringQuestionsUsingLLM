@@ -12,10 +12,10 @@ question = st.text_input("Question: ")
 
 if st.button('Submit'):
     chain = get_qa_chain()
-    response = chain(question)
+    response = chain.invoke({"input":question})
 
     st.header("Answer")
-    st.write(response["result"])
+    st.write(response['answer'])
 
 st.markdown('##') # Adding the vetical seperating space
 st.markdown('##') # Adding the vetical seperating space
