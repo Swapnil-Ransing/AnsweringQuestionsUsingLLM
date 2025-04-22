@@ -24,5 +24,5 @@ st.markdown('##') # Adding the vetical seperating space
 st.subheader("Explore The Details:")
 st.write("For git repository and details, [check out this link](https://github.com/Swapnil-Ransing/AnsweringQuestionsUsingLLM)")
 st.write("Created by [Swapnil Ransing](https://swapnil-ransing.github.io/PersonalWebsite/)"
-         " using Google Palm, Huggingface, FAISS and langchain")
+         " using Gemini gemini-2.0-flash-001 ChatGoogleGenerativeAI , Huggingface embedding model all-mpnet-base-v2, FAISS and langchain")
 st.write("For other projects from Swapnil, [check out this link](https://swapnil-ransing.github.io/PersonalWebsite/projects/)")
