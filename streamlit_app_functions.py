@@ -49,10 +49,10 @@ print('Retriever is created')
 
 print('-'*50)
 
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
+from langchain.chains import create_retrieval_chain
+    from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_google_genai import ChatGoogleGenerativeAI
-# api_key=st.secrets["GOOGLE_API_KEY"]
-# print('First four digits of api_key is ',api_key[0:4])
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash-001",
@@ -62,32 +62,28 @@ llm = ChatGoogleGenerativeAI(
 
 print('Creating a prompt template')
 # creating the prompt template
-from langchain.prompts import PromptTemplate
 
-prompt_template = """Given the following context and a question, generate an answer based on this context only.
+system_prompt = (
+    """Given the following context and a question, generate an answer based on this context only.
 In the answer try to provide as much text as possible from "Answer" section in the source document context without making much changes.
 If the answer is not found in the context, kindly state "I don't know." Don't try to make up an answer.
 
-CONTEXT: {context}
-
-QUESTION: {question}"""
-
-
-PROMPT = PromptTemplate(
-    template=prompt_template, input_variables=["context", "question"]
+CONTEXT : {context} """
 )
-chain_type_kwargs = {"prompt": PROMPT}
+
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_prompt),
+        ("human", "{input}"),
+    ]
+)
+
+question_answer_chain = create_stuff_documents_chain(llm, prompt)
+
 print('Prompt template is completed')
 print('-'*50)
 
-from langchain.chains import RetrievalQA
-
 # creating a function to be used for retrieving the responses
 def get_qa_chain():
-    chain_r = RetrievalQA.from_chain_type(llm=llm,
-                                        chain_type="stuff",
-                                        retriever=retriever,
-                                        input_key="query",
-                                        return_source_documents=True,
-                                        chain_type_kwargs=chain_type_kwargs)
+    chain_r = create_retrieval_chain(retriever, question_answer_chain)
     return (chain_r)
