@@ -1,95 +1,75 @@
 # This file consists of functions to be used for hosting the app
-import streamlit as st
 print('In streamlit_app_functions file')
-
-# To resolve the error - https://discuss.streamlit.io/t/message-error-about-torch/90886/4
-import torch
-torch.classes.__path__ = [] # add this line to manually set it to empty. 
-
-
+import streamlit as st
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-GOOGLE_API_KEY=st.secrets["google_api_key"]
-# LANGCHAIN_API_KEY=st.secrets["langchain_api_key"]
-# os.environ["LANGCHAIN_TRACING_V2"]="true"
-# LANGCHAIN_PROJECT=st.secrets["langchain_project"]
-HF_TOKEN=st.secrets["huggingface_access_token"]
+os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
+os.environ["LANGSMITH_API_KEY"]=os.getenv("LANGSMITH_API_KEY")
+os.environ["LANGSMITH_TRACING"]="true"
+os.environ["LANGSMITH_PROJECT"]=os.getenv("LANGSMITH_PROJECT")
 
 print('Loaded the api keys')
 
-
 # Importing the required packages
+from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
+from langchain.chat_models import init_chat_model
 
-# Load the data from EPFO faq's
-from langchain_community.document_loaders import CSVLoader
+# Load the data from EPFO faq's embedding
+db_path = "faiss_db_epfo"
+embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+vectordb = FAISS.load_local(db_path, embeddings, allow_dangerous_deserialization=True)
+
+print("FAISS DB loaded from:", os.path.abspath(db_path))
 print('-'*50)
 
-print('Loading the data')
-loader = CSVLoader('EPFO_FAQs.csv', encoding='unicode_escape', source_column="Question ")
-
-# Store the loaded data in the 'data' variable
-data = loader.load()
-
-# correcting the rows as there are only specific number of questions
-data=data[:41]
-print('Data load is complete')
-print('-'*50)
-
-from langchain_huggingface import HuggingFaceEmbeddings
-print("Imported HuggingFaceEmbeddings package")
-
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-print('Initialized the embedding')
-
-# Create a FAISS instance for vector database from 'data'
-vectordb = FAISS.from_documents(documents=data,embedding=embeddings)
-print('Vector database is prepared')
 # Create a retriever for querying the vector database
 retriever = vectordb.as_retriever()
 print('Retriever is created')
 
 print('-'*50)
 
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_google_genai import ChatGoogleGenerativeAI
-
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash-001",
-    temperature=0.3,
-    timeout=10,
-    max_retries=5
-)
+llm = init_chat_model("openai:gpt-4.1-nano", temperature=0.3,max_retries=2)
 
 print('Creating a prompt template')
 # creating the prompt template
 
-system_prompt = (
-    """Given the following context and a question, generate an answer based on this context only.
-In the answer try to provide as much text as possible from "Answer" section in the source document context without making much changes.
-If the answer is not found in the context, kindly state "I don't know." Don't try to make up an answer.
+prompt_template = """Given the following context and a question, generate an answer based on this context only. Context is 
+relevent FAQ's found from employee provident fund FAQ's database. Read the context in details and come up with the answer from 
+the "Answer" section in the context source document. You can elaborate your answers in maximum 2 sentences. If the relevent context
+is not found to the asked question, kindly state "I do not know.".
 
-CONTEXT : {context} """
+CONTEXT: {context}
+
+QUESTION: {question}"""
+
+
+PROMPT = PromptTemplate(
+    template=prompt_template, input_variables=["context", "question"]
 )
+chain_type_kwargs = {"prompt": PROMPT}
 
-prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", system_prompt),
-        ("human", "{input}"),
-    ]
-)
 
-question_answer_chain = create_stuff_documents_chain(llm, prompt)
+chain = RetrievalQA.from_chain_type(llm=llm,
+                            chain_type="stuff",
+                            retriever=retriever,
+                            input_key="query",
+                            return_source_documents=True,
+                            chain_type_kwargs=chain_type_kwargs)
 
 print('Prompt template is completed')
 print('-'*50)
 
-# creating a function to be used for retrieving the responses
-def get_qa_chain():
-    chain_r = create_retrieval_chain(retriever, question_answer_chain)
-    return (chain_r)
+# run the function
+if __name__ == "__main__":
+    print("Initializing the run process")
+    query="What should I do if I change my job"
+    chatbot_result=chain.invoke({"query": query})
+    print("-"*50)
+    print("Query : ",chatbot_result['query'])
+    print("Result : ",chatbot_result['result'])
+    print("-"*50)
