@@ -1,0 +1,21 @@
+# Ignore virtual environment folders
+.env
+.venv/
+.gitignore
+
+# cache files
+__pycache__/
+
+# Data folder which is not required
+Data/
+
+# Unnecessary folders for production
+Notebooks/
+Images/
+
+# Documentation files
+README.md
+
+# stramlit app files which uses load env
+streamlit_app.py
+streamlit_app_functions.py
