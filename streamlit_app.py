@@ -1,6 +1,6 @@
 # This file is the app python file to be run from the terminal
 import streamlit as st
-from streamlit_app_functions import get_qa_chain
+from streamlit_app_functions import chain
 
 # setting up a title and description for the app
 st.title("EPFO Question Portal")
@@ -11,11 +11,9 @@ st.text("2. KYC (procedure, update)")
 question = st.text_input("Question: ")
 
 if st.button('Submit'):
-    chain = get_qa_chain()
-    response = chain.invoke({"input":question})
-
+    response = chain.invoke({"query": question})
     st.header("Answer")
-    st.write(response['answer'])
+    st.write(response['result'])
 
 st.markdown('##') # Adding the vetical seperating space
 st.markdown('##') # Adding the vetical seperating space
